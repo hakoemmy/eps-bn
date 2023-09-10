@@ -2,15 +2,29 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Bids', {
+    await queryInterface.createTable('bids', {
       id: {
-        allowNull: false,
-        autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+      },
+      userId: {
+        type: Sequelize.UUID,
+        references: { model: 'users', key: 'id' },
+        allowNull: false,
+      },
+      tenderId: {
+        type: Sequelize.UUID,
+        references: { model: 'tenders', key: 'id' },
+        allowNull: false,
       },
       statmentOfInterest: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false
+      },
+      bidQuotationUrl: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -23,6 +37,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Bids');
+    await queryInterface.dropTable('bids');
   }
 };

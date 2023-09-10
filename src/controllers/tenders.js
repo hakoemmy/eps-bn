@@ -27,12 +27,11 @@ export default class TenderController {
 
         const pagination = paginate(page, limit);
 
-        // Regsitered Vendors should only tenders in published state
         if (role === 'VENDOR' || role === 'STAFF_USER') {
             where.status = 'Published';
             exclude = ['preferredVendorBidScore'];
         }
-        console.log(exclude);
+        
         let tenders = await Tender.findAndCountAll({
             where: where,
             attributes: { exclude: exclude },

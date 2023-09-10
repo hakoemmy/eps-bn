@@ -10,8 +10,7 @@ import {
     createTenderValidator,
     amendTenderValidator,
     approveOrRejectTenderValidator
-}
-    from '../validators/Tender';
+} from '../validators/Tender';
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 module.exports = (Sequelize, DataTypes) => {
-  const Role = Sequelize.define(
+  const Tender = Sequelize.define(
     'Tender',
     {
       id: {
@@ -43,8 +43,8 @@ module.exports = (Sequelize, DataTypes) => {
       timestamps: true,
     }
   );
-  Role.associate = ({ User }) => {
-
+  Tender.associate = ({ Bid }) => {
+    Tender.hasMany(Bid, { foreignKey: 'tenderId', targetKey: 'id', as: 'tender' });
   };
-  return Role;
+  return Tender;
 };

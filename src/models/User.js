@@ -92,8 +92,9 @@ module.exports = (Sequelize, DataTypes) => {
       paranoid: true,
     }
   );
-  User.associate = ({ Role, Tender }) => {
+  User.associate = ({ Role, Bid }) => {
     User.belongsTo(Role, { foreignKey: 'roleId', targetKey: 'id', as: 'role' });
+    User.hasMany(Bid, { foreignKey: 'userId', targetKey: 'id', as: 'user' });
   };
   // eslint-disable-next-line func-names
   User.prototype.getRoleName = async function () {
