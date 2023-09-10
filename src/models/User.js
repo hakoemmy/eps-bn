@@ -10,7 +10,7 @@ module.exports = (Sequelize, DataTypes) => {
         primaryKey: true,
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
-        allowNull: true,
+        allowNull: false,
       },
       name: {
         type: DataTypes.STRING(100),
@@ -92,7 +92,7 @@ module.exports = (Sequelize, DataTypes) => {
       paranoid: true,
     }
   );
-  User.associate = ({ Role }) => {
+  User.associate = ({ Role, Tender }) => {
     User.belongsTo(Role, { foreignKey: 'roleId', targetKey: 'id', as: 'role' });
   };
   // eslint-disable-next-line func-names

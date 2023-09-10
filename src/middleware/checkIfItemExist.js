@@ -9,7 +9,7 @@ export default  (items = [{ modelName: '', hasIdInBody: false, customId: '' }]) 
     let { modelName, hasIdInBody, customId} = item;
     const modelId = customId ? customId : `${modelName?.toLowerCase()}Id`;
     if((hasIdInBody && body[modelId]) || (!hasIdInBody && params[modelId])){
-    const foundRecord = await models[modelName]?.findOne({where: {id: hasIdInBody ? body[modelId]: params[modelId], deletedAt: null } });
+    const foundRecord = await models[modelName]?.findOne({where: {id: hasIdInBody ? body[modelId]: params[modelId] } });
     if(!foundRecord){
       errors.push(modelId);
       }
