@@ -3,7 +3,7 @@ import paginate from '../helpers/paginate';
 import { sendResult } from '../helpers';
 import models from '../models';
 
-const { Bid, Tender, User } = models;
+const { Bid, Tender, User, Rating } = models;
 
 export default class BidController {
 
@@ -14,7 +14,7 @@ export default class BidController {
                 id: body.tenderId
             }
         });
-        console.log(checkExistingTender[0]?.dataValues);
+
         if (checkExistingTender[0]?.dataValues.status !== 'Published')
             return sendResult(
                 res,
@@ -24,7 +24,7 @@ export default class BidController {
 
         const checkExistingBid = await Bid.findAll({
             where: {
-                userId: id
+                userId: id, tenderId: body.tenderId
             }
         });
         if (checkExistingBid.length) {
@@ -57,7 +57,7 @@ export default class BidController {
         let bids = await Bid.findAndCountAll({
             where: where,
             include: [
-                { model: User, as: 'user', attributes: { exclude: ['password', 'deletedAt', 'resetKey'] } },
+                { model: User, as: 'user', attributes: { exclude: ['password', 'deletedAt', 'resetKey','roleId'] } },
                 { model: Tender, as: 'tender', attributes: { exclude: role === 'VENDOR' ? ['preferredVendorBidScore'] : [] } }
             ],
             limit: pagination.limit,

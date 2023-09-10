@@ -38,9 +38,10 @@ module.exports = (Sequelize, DataTypes) => {
       timestamps: true,
     }
   );
-  Bid.associate = ({ User, Tender }) => {
+  Bid.associate = ({ User, Tender, Rating }) => {
     Bid.belongsTo(User, { foreignKey: 'userId', targetKey: 'id', as: 'user' });
     Bid.belongsTo(Tender, { foreignKey: 'tenderId', targetKey: 'id', as: 'tender' });
+    Bid.hasOne(Rating, { foreignKey: 'bidId', targetKey: 'id', as: 'bid' });
   };
   return Bid;
 };

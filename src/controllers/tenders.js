@@ -140,6 +140,7 @@ export default class TenderController {
             });
 
         // TODO: Notify OFFICERs that a tender has been approved or rejected
+        // TODO: Notify Registered Vendors about new tender listings
 
         return sendResult(
             res,
