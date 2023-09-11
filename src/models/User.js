@@ -40,6 +40,10 @@ module.exports = (Sequelize, DataTypes) => {
         is: regex.url,
         validate: { isUrl: true },
       },
+      score: {
+        type: DataTypes.DOUBLE,
+        defaultValue: 0
+      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,

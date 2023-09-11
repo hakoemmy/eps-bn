@@ -26,5 +26,18 @@ router.route('/').post(auth,
     joiValidator(createBidValidator),
     asyncHandler(BidController.create));
 
+router.route('/tenders/:tenderId/get-suggested-winners').get(auth,
+        checkPerm(['ADMIN', 'PROCUREMENT_OFFICER']),
+        checkIfItemExist([
+            { modelName: 'Tender', hasIdInBody: false }
+        ]),
+        asyncHandler(BidController.getSuggestedWinners));
+
+router.route('/:bidId/select-winner').patch(auth,
+            checkPerm(['ADMIN', 'PROCUREMENT_OFFICER']),
+            checkIfItemExist([
+                { modelName: 'Bid', hasIdInBody: false }
+            ]),
+            asyncHandler(BidController.selectWinner));
 
 export default router;

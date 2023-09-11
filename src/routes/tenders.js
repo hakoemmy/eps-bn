@@ -46,4 +46,5 @@ router.route('/approve-reject/:tenderId').patch(auth,
     ]),
     joiValidator(approveOrRejectTenderValidator),
     asyncHandler(TenderController.approveOrRejectTender));
+
 export default router;

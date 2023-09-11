@@ -40,6 +40,13 @@ export default class RatingController {
             {
                 ...body
             });
+        // increment user score
+        await User.update({ score: checkExistingVendor[0]?.dataValues.score + body.score },
+            {
+                where: { id: body.vendorId },
+                returning: true, plain: true
+            });
+
         return sendResult(
             res,
             statusCodes.CREATED,

@@ -31,7 +31,7 @@ export default class TenderController {
             where.status = 'Published';
             exclude = ['preferredVendorBidScore'];
         }
-        
+
         let tenders = await Tender.findAndCountAll({
             where: where,
             attributes: { exclude: exclude },
@@ -150,5 +150,6 @@ export default class TenderController {
         );
 
     }
+
 
 }

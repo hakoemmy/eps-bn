@@ -72,6 +72,10 @@ module.exports = {
         validate: { isUrl: true },
         allowNull: true
       },
+      score: {
+        type: Sequelize.DOUBLE,
+        defaultValue: 0
+      },
       address: { type: Sequelize.TEXT, allowNull: true },
       isVerified: { type: Sequelize.BOOLEAN, defaultValue: false },
       createdAt: { allowNull: false, type: Sequelize.DATE },
