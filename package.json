@@ -26,10 +26,17 @@
   "author": "Emmanuel Hakorimana",
   "license": "MIT",
   "dependencies": {
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/node": "^7.12.6",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/register": "^7.12.1",
     "@sendgrid/mail": "^7.4.2",
     "accesscontrol": "^2.2.1",
     "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
+    "bullmq": "^4.10.0",
     "clickatell-platform": "^2.0.11",
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
@@ -67,13 +74,7 @@
     "pg-native": "^3.0.0",
     "read-excel-file": "^5.0.0",
     "sequelize": "^6.3.5",
-    "uuid": "^8.3.2",
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/node": "^7.12.6",
-    "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.12.7",
-    "@babel/register": "^7.12.1"
+    "uuid": "^8.3.2"
   },
   "jest": {
     "testEnvironment": "node",

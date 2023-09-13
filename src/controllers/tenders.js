@@ -2,16 +2,30 @@ import { errorMessages, statusCodes } from '../constants';
 import paginate from '../helpers/paginate';
 import { sendResult } from '../helpers';
 import models from '../models';
+import { Queue } from 'bullmq';
 
 const { Tender } = models;
 
+const redisOptions = { host: "localhost", port: 6379 };
+
 export default class TenderController {
-    static async create({ body }, res) {
+    static tendersQueue = new Queue('tenders', { connection: redisOptions });
+
+    static async create({ body, user: { role, id } }, res) {
 
         const tender = await Tender.create({ ...body });
 
-        // TODO: Notifying procurement officers about the tender so they can amend and
-        // send procurrament request to Admins to reject or approve
+        // Notifying procurement officers about the tender so they can amend
+        if (role === 'STAFF_USER') {
+            const payload = {
+                action: 'tender.created',
+                tenderId: tender.dataValues.id,
+                creatorId: id
+            };
+
+            await TenderController.tendersQueue.add('tender.created', payload);
+        }
+
         return sendResult(
             res,
             statusCodes.CREATED,
@@ -53,7 +67,7 @@ export default class TenderController {
         );
     }
 
-    static async amendTender({ body, params: { tenderId } }, res) {
+    static async amendTender({ body, params: { tenderId }, user: { role, id } }, res) {
 
         const existingTender = await Tender.findAll({
             where: {
@@ -78,7 +92,16 @@ export default class TenderController {
                 returning: true, plain: true
             });
 
-        // TODO: Notify ADMINs that a tender is amended by OFFICER and it needs approval
+        // Notify ADMINs that a tender is amended by OFFICER and it needs approval
+        if (role === 'PROCUREMENT_OFFICER') {
+            const payload = {
+                action: 'tender.amended',
+                tenderId,
+                creatorId: id
+            };
+
+            await TenderController.tendersQueue.add('tender.amended', payload);
+        }
 
         return sendResult(
             res,
@@ -90,7 +113,6 @@ export default class TenderController {
     }
 
     static async getProcurrementRequests({ query: { limit = 10, page = 1 }, user: { role } }, res) {
-        const where = {};
         const pagination = paginate(page, limit);
 
         let tenders = await Tender.findAndCountAll({
@@ -115,7 +137,7 @@ export default class TenderController {
         );
     }
 
-    static async approveOrRejectTender({ body, params: { tenderId } }, res) {
+    static async approveOrRejectTender({ body, params: { tenderId }, user: { role, id } }, res) {
 
         const existingTender = await Tender.findAll({
             where: {
@@ -139,8 +161,15 @@ export default class TenderController {
                 returning: true, plain: true
             });
 
-        // TODO: Notify OFFICERs that a tender has been approved or rejected
-        // TODO: Notify Registered Vendors about new tender listings
+        // Notify OFFICERs that a tender has been approved or rejected
+        // Notify Registered Vendors about new tender listings
+        const payload = {
+            action: 'tender.approved-or-rejected',
+            tenderId,
+            creatorId: id
+        };
+
+        await TenderController.tendersQueue.add('tender.approved-or-rejected', payload);
 
         return sendResult(
             res,
