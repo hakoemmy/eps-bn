@@ -1,4 +1,5 @@
 import models from '../models';
+import Ws from '../services/ws';
 
 const { Tender, Notification, User } = models;
 
@@ -33,11 +34,14 @@ export const processTenderCreated = async (job) => {
     for (const officer of officers) {
         const notifcationBody = `Hey ${officer.dataValues.name}, ${staffUser.dataValues.name} opened a new tender called: "${tender.dataValues.name}". Check it out to create a procurement request!`;
 
-        await Notification.create({
+        const createdNotification = await Notification.create({
             userId: officer.dataValues.id,
             body: notifcationBody,
             payload: notificationPayload
         });
+
+        // deliver notification via websocket
+        Ws.io.to(`notification:${officer.dataValues.id}`).emit('notifications-center', createdNotification);
     }
 
     return;
@@ -76,11 +80,14 @@ export const processTenderAmended = async (job) => {
     for (const admin of admins) {
         const notifcationBody = `Hey ${admin.dataValues.name}, there is a new procurement request from ${officerUser.dataValues.name} about "${tender.dataValues.name}". You can review and approve or reject it.`;
 
-        await Notification.create({
+        const createdNotification = await Notification.create({
             userId: admin.dataValues.id,
             body: notifcationBody,
             payload: notificationPayload
         });
+
+        // deliver notification via websocket
+        Ws.io.to(`notification:${admin.dataValues.id}`).emit('notifications-center', createdNotification);
     }
 
     return;
@@ -117,11 +124,13 @@ export const processTenderApprovedOrRjected = async (job) => {
     for (const officer of officers) {
         const notifcationBody = `Hey ${officer.dataValues.name}, Your procurement request about "${tender.dataValues.name}" has been ${tender.dataValues.status} by ${adminUser.dataValues.name}`;
 
-        await Notification.create({
+        const createdNotification = await Notification.create({
             userId: officer.dataValues.id,
             body: notifcationBody,
             payload: notificationPayload
         });
+
+        Ws.io.to(`notification:${officer.dataValues.id}`).emit('notifications-center', createdNotification);
     }
 
     if (tender.dataValues.status === 'Published') {
@@ -134,11 +143,13 @@ export const processTenderApprovedOrRjected = async (job) => {
         for (const vendor of vendors) {
             const notifcationBody = `Hey ${vendor.dataValues.name}, new tender about "${tender.dataValues.name}" has been published. Check it out!`;
 
-            await Notification.create({
+            const createdNotification = await Notification.create({
                 userId: vendor.dataValues.id,
                 body: notifcationBody,
                 payload: notificationPayload
             });
+
+            Ws.io.to(`notification:${vendor.dataValues.id}`).emit('notifications-center', createdNotification);
         }
     }
 

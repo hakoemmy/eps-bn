@@ -51,7 +51,8 @@ export default {
           updatedAt: new Date(),
           id: uuidv4(),
           isVerified: true,
-          roleId: 4
+          roleId: 4,
+          score: 15
         },
       ],
       {}
